@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Form updated: category and bank fields are now text inputs -->
 <div class="min-h-screen bg-black pt-32 pb-20">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
