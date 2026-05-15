@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production (for asset URLs, etc.)
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         // Trust proxies for HTTPS on Render
         if (app()->environment('production')) {
             Request::setTrustedProxies(
