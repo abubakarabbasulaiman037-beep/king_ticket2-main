@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
+    nodejs \
+    npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_sqlite
 
@@ -19,6 +21,8 @@ WORKDIR /app
 COPY . /app
 
 RUN php -m
+
+RUN npm install && npm run build
 
 RUN composer install --ignore-platform-req=ext-gd --no-dev --optimize-autoloader
 
