@@ -1,29 +1,32 @@
 FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
-    unzip \
     git \
+    unzip \
     curl \
-    libsqlite3-dev \
     sqlite3 \
+    libsqlite3-dev \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_sqlite
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-COPY . .
+COPY . /app
 
-RUN composer install --no-dev --optimize-autoloader
+RUN php -m
 
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
+RUN composer install --ignore-platform-req=ext-gd --no-dev --optimize-autoloader
+
+RUN php artisan config:clear || true
+RUN php artisan cache:clear || true
+RUN php artisan route:clear || true
+RUN php artisan view:clear || true
 
 EXPOSE 10000
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
