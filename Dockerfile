@@ -22,6 +22,9 @@ RUN php -m
 
 RUN composer install --ignore-platform-req=ext-gd --no-dev --optimize-autoloader
 
+RUN touch database/database.sqlite
+RUN php artisan migrate --force
+
 RUN php artisan config:clear || true
 RUN php artisan cache:clear || true
 RUN php artisan route:clear || true
