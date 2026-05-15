@@ -37,4 +37,5 @@ RUN php artisan view:clear || true
 
 EXPOSE 10000
 
+ENV SCRIPT_NAME=/
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
