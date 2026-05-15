@@ -6,7 +6,11 @@ RUN apt-get update && apt-get install -y \
     curl \
     libsqlite3-dev \
     sqlite3 \
-    && docker-php-ext-install pdo pdo_sqlite
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_sqlite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
