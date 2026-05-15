@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: king-ticket-app
+    env: docker
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: 'true'
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: SESSION_ENCRYPT
+        value: 'true'
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: LOG_CHANNEL
+        value: stack

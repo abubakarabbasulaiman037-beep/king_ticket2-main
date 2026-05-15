@@ -38,4 +38,9 @@ RUN php artisan view:clear || true
 EXPOSE 10000
 
 ENV SCRIPT_NAME=/
+ENV SESSION_DRIVER=cookie
+ENV SESSION_ENCRYPT=true
+ENV CACHE_STORE=database
+ENV QUEUE_CONNECTION=database
+
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
