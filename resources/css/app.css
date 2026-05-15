@@ -1,0 +1,681 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    /* Fonts */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* King Ticket Surface Hierarchy (Deep Navy System) */
+    --color-surface-base: #060B18;
+    --color-surface-primary: #0B1224;
+    --color-surface-secondary: #0F1730;
+    --color-surface-elevated: #141E3C;
+    --color-surface-card: #192348;
+    --color-surface-overlay: #1E2A52;
+
+    /* Golden Accent System */
+    --color-gold: #F5A623;
+    --color-gold-light: #FFBE45;
+    --color-gold-dark: #D4900A;
+    --color-gold-muted: #C8922A;
+
+    /* Text Colors */
+    --color-luxury: #FFFFFF;
+    --color-mercury: #E2E8F0;
+    --color-chrome: #94A3B8;
+    --color-graphite: #475569;
+    --color-obsidian: #1E293B;
+
+    /* Status System */
+    --color-success-lux: #10B981;
+    --color-warning-lux: #F59E0B;
+    --color-danger-lux: #EF4444;
+
+    /* Borders & Edges (Gold-tinted) */
+    --color-edge-subtle: rgba(245, 166, 35, 0.06);
+    --color-edge-default: rgba(245, 166, 35, 0.12);
+    --color-edge-strong: rgba(245, 166, 35, 0.22);
+    --color-edge-active: rgba(245, 166, 35, 0.4);
+
+    /* Shadow Layers */
+    --shadow-lux-sm: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(245, 166, 35, 0.03);
+    --shadow-lux-md: 0 8px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(245, 166, 35, 0.04);
+    --shadow-lux-lg: 0 24px 48px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(245, 166, 35, 0.05);
+
+    /* Animation Timing */
+    --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ══════════════════════════════════════════════
+   GLOBAL BASE
+   ═══════════════════════════════════════════ */
+
+:root {
+    color-scheme: dark;
+}
+
+html, body {
+    background: var(--color-surface-base);
+    color: var(--color-mercury);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════════════
+   ADVANCED SURFACE COMPONENTS
+   ═══════════════════════════════════════════ */
+
+/* High-end Glassmorphism (Navy) */
+.glass {
+    background: rgba(11, 18, 36, 0.75);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid var(--color-edge-subtle);
+}
+
+/* Scanning Light Effect on Hover */
+.scan-line {
+    position: relative;
+    overflow: hidden;
+}
+
+.scan-line::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        transparent 45%,
+        rgba(245, 166, 35, 0.03) 50%,
+        transparent 55%,
+        transparent 100%
+    );
+    transition: transform 0.6s var(--ease-luxury);
+    pointer-events: none;
+}
+
+.scan-line:hover::after {
+    transform: translate(25%, 25%);
+}
+
+/* ══════════════════════════════════════════════
+   ANIMATIONS & DYNAMICS
+   ═══════════════════════════════════════════ */
+
+@keyframes pulse-soft {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.05); }
+}
+
+@keyframes scan-horizontal {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes float-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 8s var(--ease-luxury) infinite;
+}
+
+.animate-float-subtle {
+    animation: float-subtle 6s var(--ease-luxury) infinite;
+}
+
+/* Subtle Ambient Depth Blobs */
+.ambient-glow {
+    position: fixed;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.015) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* ══════════════════════════════════════════════
+   REFINED COMPONENTS
+   ═══════════════════════════════════════════ */
+
+.btn-primary {
+    @apply bg-gold text-surface-base font-bold px-8 py-3 rounded-lg transition-all duration-300;
+}
+
+.btn-primary:hover {
+    @apply bg-gold-light -translate-y-1 shadow-lux-lg;
+}
+
+.card-luxury {
+    @apply bg-surface-primary border border-edge-subtle p-8 rounded-xl transition-all duration-500 hover:border-edge-strong shadow-lux-md hover:shadow-lux-lg;
+    position: relative;
+}
+
+.card-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 0;
+    background: var(--color-gold);
+    transition: height 0.4s var(--ease-luxury);
+    border-radius: 2px;
+}
+
+.card-luxury:hover::before {
+    height: 100%;
+}
+
+/* Scrollbar Chrome */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-surface-base);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-graphite);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold-dark);
+}
+
+/* ══════════════════════════════════════════════
+   OVERWRITING LEGACY CLASSES
+   ═══════════════════════════════════════════ */
+
+.elevation-1 { @apply shadow-lux-sm; }
+.elevation-2 { @apply shadow-lux-md; }
+.elevation-3 { @apply shadow-lux-lg; }
+
+.btn-secondary {
+    @apply border border-edge-default bg-surface-elevated text-mercury px-6 py-2 rounded-lg transition-all duration-300 hover:bg-surface-card hover:border-edge-strong;
+}
+
+.text-luxury {
+    @apply text-white tracking-widest uppercase font-black;
+}
+
+/* ══════════════════════════════════════════════
+   PREMIUM FORMS & INPUTS
+   ═══════════════════════════════════════════ */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+textarea,
+select {
+    @apply bg-surface-elevated border border-edge-subtle rounded-lg px-4 py-3 text-mercury transition-all duration-300;
+    font-size: 0.875rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    @apply border-edge-active outline-none bg-surface-card;
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+textarea:hover,
+select:hover {
+    @apply border-edge-strong bg-surface-overlay;
+}
+
+/* Premium Input with Gold Accent */
+.input-king {
+    border-color: rgba(245, 166, 35, 0.2);
+}
+
+.input-king:focus {
+    border-color: rgba(245, 166, 35, 0.6);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Keep old class for backward compat */
+.input-cyber {
+    border-color: rgba(245, 166, 35, 0.2);
+}
+
+.input-cyber:focus {
+    border-color: rgba(245, 166, 35, 0.6);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ══════════════════════════════════════════════
+   PREMIUM BUTTONS SYSTEM
+   ═══════════════════════════════════════════ */
+
+.btn-accent {
+    @apply relative px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 overflow-hidden;
+    background: linear-gradient(135deg, #F5A623 0%, #D4900A 100%);
+    color: #060B18;
+    border: none;
+}
+
+.btn-accent:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 8px 20px rgba(245, 166, 35, 0.25);
+    border-color: rgba(255, 190, 69, 0.6);
+}
+
+.btn-accent:active {
+    @apply scale-95;
+}
+
+/* Clean button hover - no shine effect */
+
+/* Danger button variant */
+.btn-danger {
+    @apply px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-wider bg-gradient-to-r from-red-600/80 to-red-700/80 hover:from-red-600 hover:to-red-700 text-white border border-red-500/40 hover:border-red-400 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/30;
+}
+
+.btn-danger:hover {
+    @apply -translate-y-0.5;
+}
+
+.btn-danger:active {
+    @apply scale-95;
+}
+
+/* Success button */
+.btn-success {
+    @apply px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-wider bg-gradient-to-r from-green-600/80 to-emerald-600/80 hover:from-green-600 hover:to-emerald-600 text-white border border-green-500/40 hover:border-green-400 transition-all duration-300;
+}
+
+.btn-success:hover {
+    @apply -translate-y-0.5 shadow-md;
+}
+
+/* ══════════════════════════════════════════════
+   PREMIUM CARDS WITH GOLD GLOW
+   ═══════════════════════════════════════════ */
+
+.card-cyber {
+    @apply relative bg-surface-primary border rounded-xl p-6 transition-all duration-500 overflow-hidden;
+    border-color: rgba(245, 166, 35, 0.12);
+}
+
+.card-cyber:hover {
+    @apply bg-surface-card;
+    box-shadow: 0 0 20px rgba(245, 166, 35, 0.1), inset 0 1px 0 rgba(245, 166, 35, 0.04);
+    border-color: rgba(245, 166, 35, 0.3);
+}
+
+.card-cyber::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--tw-mouse-x, 50%) var(--tw-mouse-y, 50%), rgba(245, 166, 35, 0.06), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.card-cyber:hover::before {
+    opacity: 1;
+}
+
+/* Card with accent glow variants */
+.card-glow-gold {
+    border-color: rgba(245, 166, 35, 0.1);
+}
+
+.card-glow-gold:hover {
+    border-color: rgba(245, 166, 35, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Keep old class names for backward compat */
+.card-glow-cyan {
+    @apply border-amber-500/20;
+    box-shadow: 0 0 0 0 rgba(245, 166, 35, 0);
+}
+
+.card-glow-cyan:hover {
+    @apply border-amber-500/50;
+    box-shadow: 0 0 20px rgba(245, 166, 35, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.card-glow-purple {
+    @apply border-amber-500/20;
+}
+
+.card-glow-purple:hover {
+    @apply border-amber-500/40;
+    box-shadow: 0 0 20px rgba(245, 166, 35, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* ══════════════════════════════════════════════
+   PREMIUM MODALS & OVERLAYS
+   ═══════════════════════════════════════════ */
+
+.modal-backdrop {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300;
+}
+
+.modal-content {
+    @apply bg-surface-primary border border-edge-default rounded-2xl max-w-2xl w-full mx-auto my-auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.4);
+    animation: slide-up 0.3s ease-out;
+}
+
+/* ══════════════════════════════════════════════
+   PREMIUM TABLES & DATA
+   ═══════════════════════════════════════════ */
+
+.table-premium {
+    @apply w-full border-collapse;
+}
+
+.table-premium thead {
+    @apply border-b border-edge-strong bg-surface-secondary/50;
+}
+
+.table-premium th {
+    @apply px-6 py-4 text-left text-xs uppercase tracking-wider font-bold text-gold;
+}
+
+.table-premium td {
+    @apply px-6 py-4 border-b border-edge-subtle text-sm;
+}
+
+.table-premium tbody tr {
+    @apply transition-all duration-300 hover:bg-surface-overlay;
+}
+
+.table-premium tbody tr:hover {
+    @apply border-edge-strong;
+}
+
+/* ══════════════════════════════════════════════
+   BADGES & STATUS INDICATORS
+   ═══════════════════════════════════════════ */
+
+.badge {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider;
+}
+
+.badge-primary {
+    @apply bg-amber-500/20 text-amber-300 border border-amber-500/30;
+}
+
+.badge-success {
+    @apply bg-green-500/20 text-green-300 border border-green-500/30;
+}
+
+.badge-warning {
+    @apply bg-yellow-500/20 text-yellow-300 border border-yellow-500/30;
+}
+
+.badge-danger {
+    @apply bg-red-500/20 text-red-300 border border-red-500/30;
+}
+
+.badge-cyber {
+    @apply bg-amber-500/20 text-amber-300 border border-amber-500/30;
+}
+
+/* ══════════════════════════════════════════════
+   TYPOGRAPHY ENHANCEMENTS
+   ═══════════════════════════════════════════ */
+
+h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-black;
+}
+
+h1 {
+    @apply text-5xl md:text-7xl leading-none;
+}
+
+h2 {
+    @apply text-4xl md:text-5xl;
+}
+
+h3 {
+    @apply text-2xl md:text-3xl;
+}
+
+.text-gradient {
+    @apply bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent;
+}
+
+.text-glow {
+    text-shadow: 0 0 20px rgba(245, 166, 35, 0.3), 0 0 40px rgba(245, 166, 35, 0.1);
+}
+
+/* ══════════════════════════════════════════════
+   LOADERS & SKELETONS
+   ═══════════════════════════════════════════ */
+
+.skeleton {
+    @apply bg-surface-card animate-pulse rounded;
+    animation: shimmer 2s infinite;
+    background: linear-gradient(
+        90deg,
+        var(--color-surface-card) 0%,
+        var(--color-surface-overlay) 50%,
+        var(--color-surface-card) 100%
+    );
+    background-size: 200% 100%;
+}
+
+/* Spinners */
+.spinner {
+    @apply inline-block w-4 h-4 border-2 border-mercury border-t-gold rounded-full;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+/* ══════════════════════════════════════════════
+   UTILITY ANIMATIONS FOR SECTIONS
+   ═══════════════════════════════════════════ */
+
+.fade-enter {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.slide-enter-left {
+    animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-enter-bottom {
+    animation: slideInBottom 0.5s ease-out;
+}
+
+@keyframes slideInBottom {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hover lift effect for cards */
+.lift-on-hover {
+    @apply transition-all duration-300 cursor-pointer;
+}
+
+.lift-on-hover:hover {
+    @apply -translate-y-2;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ══════════════════════════════════════════════
+   CROWN / KING TICKET BRANDING
+   ═══════════════════════════════════════════ */
+
+.crown-icon {
+    color: var(--color-gold);
+    filter: drop-shadow(0 0 6px rgba(245, 166, 35, 0.4));
+}
+
+.brand-text {
+    color: white;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+/* Feature card icon backgrounds */
+.feature-icon-bg {
+    @apply w-14 h-14 rounded-xl flex items-center justify-center;
+    background: rgba(245, 166, 35, 0.1);
+    border: 1px solid rgba(245, 166, 35, 0.2);
+}
+
+.feature-icon-bg svg {
+    @apply w-7 h-7;
+    color: var(--color-gold);
+}
+
+/* ══════════════════════════════════════════════
+   MINIMAL ANIMATIONS & EFFECTS
+   ═══════════════════════════════════════════ */
+
+/* Simple fade in for page loads */
+.fade-in {
+    animation: fade-in-simple 0.5s ease-out;
+}
+
+@keyframes fade-in-simple {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Clean hover effect */
+.hover-lift {
+    transition: all 0.3s ease-out;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Ambient pulse with depth */
+.ambient-glow {
+    @apply absolute rounded-full;
+    filter: blur(80px);
+}
+
+/* Hover shine for premium buttons */
+.hover-shine {
+    position: relative;
+    overflow: hidden;
+}
+
+.hover-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: shine-sweep 3s infinite;
+}
+
+@keyframes shine-sweep {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Premium shadow system */
+.shadow-premium {
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.6),
+        0 12px 24px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(245, 166, 35, 0.05);
+}
+
+.shadow-premium-sm {
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(245, 166, 35, 0.03);
+}
+
+.shadow-premium-lg {
+    box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.7),
+        0 16px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(245, 166, 35, 0.06);
+}
+
+/* Smooth page transitions */
+.page-transition-enter {
+    animation: page-fade-in 0.6s ease-out forwards;
+}
+
+@keyframes page-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced pulse that's cinematic */
+@keyframes pulse-cinematic {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.animate-pulse-cinematic {
+    animation: pulse-cinematic 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

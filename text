@@ -1,0 +1,170 @@
+You must generate a complete, production-ready Laravel 12 project with the following requirements. 
+Write ALL project files, all routes, all controllers, all models, all migrations, all seeders, all Blade views, all Tailwind UI, and all logic. 
+Make the entire project responsive, clean and bug-free. 
+Your job is to output **complete code** for each file, one after the other, with no missing parts.
+
+=================================================================
+📌 PROJECT NAME: Event Ticketing + Payment + QR + Scanner System
+=================================================================
+
+===============================
+🌍 1. FEATURES TO IMPLEMENT
+===============================
+✔ User authentication (Laravel Breeze)
+✔ Event creation (title, date, location, description, banner upload)
+✔ Ticket price + ticket selling
+✔ Paystack payment integration (I will add the keys in .env)
+✔ After payment → Generate ticket + QR code
+✔ User dashboard with:
+   - Total events created
+   - Total tickets sold
+   - List of events
+✔ Public events listing
+✔ Event detail page with "Buy Ticket"
+✔ PDF OR HTML-based ticket page with QR
+✔ Scanner system:
+   - Scan QR
+   - Verify ticket
+   - Mark ticket as used
+✔ Fully responsive Tailwind UI
+✔ Clean and modern design
+✔ No errors, no debugging needed
+✔ Works instantly on "php artisan serve"
+
+===============================
+📁 2. FOLDER STRUCTURE
+===============================
+app/
+  Http/
+     Controllers/
+        EventController.php
+        TicketController.php
+        PaymentController.php
+        ScannerController.php
+  Models/
+     User.php
+     Event.php
+     Ticket.php
+     Payment.php
+
+resources/
+  views/
+     layouts/
+        app.blade.php
+     home.blade.php
+     events/
+        index.blade.php
+        show.blade.php
+        create.blade.php
+        edit.blade.php
+     dashboard.blade.php
+     tickets/
+        myticket.blade.php
+        qr.blade.php
+     scanner/
+        scan.blade.php
+        result.blade.php
+
+database/
+  migrations/
+  seeders/
+  factories/
+
+public/
+  banners/
+  qrcodes/
+
+===============================
+⚙ 3. BACKEND LOGIC
+===============================
+EVENTS:
+- CRUD (index, show, create, store, edit, update, delete)
+- Banners stored using Storage::disk('public') inside /banners
+
+TICKETS:
+- Generated after successful payment
+- QR code generated using simple-qrcode
+- Stored in /qrcodes
+- User can view their tickets
+
+PAYMENT (PAYSTACK):
+- initiate payment
+- callback verification
+- create payment record
+- create ticket
+- redirect user to ticket page
+
+SCANNER:
+- scan page (camera input or manual QR input)
+- verifies ticket
+- marks ticket as "used"
+
+===============================
+🛢 4. MIGRATIONS
+===============================
+Users
+Events: user_id, title, description, date, location, banner, price
+Tickets: event_id, user_id, qr_code, used
+Payments: event_id, buyer_id, amount, reference, status
+
+All foreign keys → onDelete('cascade')
+
+===============================
+🎨 5. UI REQUIREMENTS
+===============================
+GENERAL STYLE:
+- TailwindCSS
+- Modern, clean, light UI
+- Fully responsive (mobile-first)
+- Navbar: Home | Events | Create Event | Dashboard | Logout
+- Use soft shadows, rounded corners
+
+HOME PAGE:
+- Hero section
+- Button → View Events
+
+EVENT PAGE:
+- Big banner
+- Event info
+- Buy ticket button
+
+DASHBOARD:
+- Stats cards
+- List of created events
+- Tickets sold numbers
+
+BUY TICKET PAGE:
+- Shows price + Paystack button
+
+TICKET PAGE:
+- Shows QR code + event info
+
+SCANNER PAGE:
+- Input to scan QR code
+- Show result (valid / invalid / already used)
+
+===============================
+🔥 6. REQUIREMENTS FOR OUTPUT
+===============================
+Generate the project in this order:
+
+1. routes/web.php  
+2. All migrations  
+3. All models  
+4. All controllers  
+5. All Blade views  
+6. All components  
+7. Seeder + Factory  
+8. Tailwind config  
+9. Any additional JS needed  
+10. Final instructions
+
+EVERY file must be 100% complete.  
+No placeholders, no TODOs, no missing code.  
+Make sure everything works together with no errors.
+
+=================================================
+NOW BEGIN GENERATING THE FULL PROJECT.
+=================================================
+SO I WANT YOU TO MAKE SURE YOU CREAT ALL THE FIES AND INSERT THE CODE INSIDE AND AUTOMATICALLY RUN ANY TERMINAL CODE NEDDED 
+=================================================

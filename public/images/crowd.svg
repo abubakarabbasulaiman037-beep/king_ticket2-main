@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#EFF6FF" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" fill="url(#g)" />
+  <!-- stylized crowd silhouettes -->
+  <g fill="#CBD5E1" opacity="0.9">
+    <circle cx="60" cy="200" r="18" />
+    <circle cx="100" cy="190" r="16" />
+    <circle cx="140" cy="205" r="14" />
+    <circle cx="180" cy="195" r="17" />
+    <circle cx="220" cy="210" r="20" />
+    <circle cx="300" cy="180" r="22" />
+    <circle cx="360" cy="200" r="18" />
+    <circle cx="420" cy="190" r="16" />
+    <circle cx="480" cy="205" r="14" />
+    <circle cx="540" cy="195" r="17" />
+    <circle cx="600" cy="210" r="20" />
+    <circle cx="720" cy="180" r="22" />
+    <circle cx="840" cy="200" r="18" />
+    <circle cx="960" cy="190" r="16" />
+    <circle cx="1080" cy="205" r="14" />
+  </g>
+  <!-- hands raised impression -->
+  <g stroke="#94A3B8" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.6">
+    <path d="M80 150 C100 120, 120 110, 140 140" />
+    <path d="M260 140 C280 110, 300 100, 320 130" />
+    <path d="M420 170 C440 140, 460 130, 480 160" />
+    <path d="M620 130 C640 100, 660 90, 680 120" />
+    <path d="M900 150 C920 120, 940 110, 960 140" />
+  </g>
+</svg>
