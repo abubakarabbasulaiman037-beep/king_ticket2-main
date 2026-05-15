@@ -11,7 +11,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SocialAuthController;
 
 Route::get('/', function () {
-    return view('home');
+    $categories = \App\Models\Category::all();
+    $banks = \App\Models\Bank::orderBy('category')->orderBy('name')->get()->groupBy('category');
+    return view('home', compact('categories', 'banks'));
 })->name('home');
 
 Route::get('/test-ticket', function () {

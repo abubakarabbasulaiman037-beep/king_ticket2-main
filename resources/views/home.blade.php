@@ -49,6 +49,35 @@
     </div>
 </section>
 
+<!-- CATEGORIES SECTION -->
+<section class="max-w-[1280px] mx-auto px-6 py-20">
+    <div class="mb-12">
+        <h2 class="text-[32px] font-bold text-black mb-2">Browse by Category</h2>
+        <p class="text-[15px] text-gray-500">Find events that match your interests</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        @forelse($categories as $category)
+            <a href="{{ route('events.public') }}?category={{ $category->id }}" class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#CBA469]/20 to-[#CBA469]/5 border border-[#CBA469]/20 p-6 hover:border-[#CBA469]/50 transition-all duration-300 hover:shadow-lg">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/0 to-transparent opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <div class="relative z-10 flex flex-col items-center justify-center text-center h-full">
+                    <div class="w-12 h-12 rounded-full bg-[#CBA469]/20 flex items-center justify-center mb-3 group-hover:bg-[#CBA469]/30 transition-colors">
+                        <svg class="w-6 h-6 text-[#CBA469]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h18M3 16h18"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-[15px] text-black group-hover:text-[#CBA469] transition-colors">{{ $category->name }}</h3>
+                    @if($category->description)
+                        <p class="text-[12px] text-gray-500 mt-1 line-clamp-2">{{ $category->description }}</p>
+                    @endif
+                </div>
+            </a>
+        @empty
+            <div class="col-span-2 sm:col-span-3 lg:col-span-5 text-center py-12">
+                <p class="text-gray-500">No categories available</p>
+            </div>
+        @endforelse
+    </div>
+</section>
+
 <!-- POPULAR EVENTS SECTION -->
 <section class="max-w-[1280px] mx-auto px-6 py-20">
     <div class="flex justify-between items-end mb-12">
@@ -260,6 +289,63 @@
             <div>
                 <h4 class="text-2xl font-bold text-black">100%</h4>
                 <p class="text-[12px] text-gray-500 uppercase tracking-widest font-medium">Secure</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BANKS & PAYMENT METHODS SECTION -->
+<section class="max-w-[1280px] mx-auto px-6 py-20">
+    <div class="mb-12">
+        <h2 class="text-[32px] font-bold text-black mb-2">Secure Payment Methods</h2>
+        <p class="text-[15px] text-gray-500">We accept payments from all major Nigerian banks and payment platforms</p>
+    </div>
+
+    @php
+        $categoryLabels = [
+            'commercial' => '🏢 Commercial Banks',
+            'merchant' => '🏛️ Merchant Banks',
+            'digital' => '💳 Digital Banks & Fintech',
+            'psb' => '📱 Payment Service Banks',
+            'microfinance' => '💰 Microfinance Banks',
+            'telco' => '📞 Telco Wallets',
+        ];
+    @endphp
+
+    <div class="space-y-8">
+        @forelse($banks as $category => $bankList)
+            @if(isset($categoryLabels[$category]))
+                <div>
+                    <h3 class="text-lg font-semibold text-black mb-4">{{ $categoryLabels[$category] }}</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        @foreach($bankList as $bank)
+                            <div class="bg-white border border-gray-200 rounded-xl p-4 text-center hover:border-[#CBA469] hover:shadow-md transition-all duration-300 group">
+                                <div class="w-10 h-10 rounded-full bg-[#CBA469]/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-[#CBA469]/20 transition-colors">
+                                    <svg class="w-6 h-6 text-[#CBA469]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h10m-7 4h4m-11-8h2a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v5a1 1 0 001 1zm0 0h14a1 1 0 001-1v-3a1 1 0 00-1-1h-2.5a1 1 0 00-1 1v2m-2 0V5a1 1 0 010-1h1a1 1 0 011 1v2"></path></svg>
+                                </div>
+                                <h4 class="font-semibold text-[13px] text-black group-hover:text-[#CBA469] transition-colors">{{ $bank->name }}</h4>
+                                <p class="text-[11px] text-gray-400 mt-1">Code: {{ $bank->code }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        @empty
+            <div class="text-center py-12">
+                <p class="text-gray-500">No payment methods available</p>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Trust Badge -->
+    <div class="mt-16 bg-gradient-to-r from-[#CBA469]/5 to-transparent border border-[#CBA469]/20 rounded-2xl p-8">
+        <div class="flex items-center gap-6">
+            <div class="w-16 h-16 rounded-full bg-[#CBA469]/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-8 h-8 text-[#CBA469]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-black mb-1">All Transactions Are Secure</h3>
+                <p class="text-gray-600">Your payment information is encrypted and protected. We use industry-standard security protocols to keep your data safe.</p>
             </div>
         </div>
     </div>
