@@ -84,10 +84,10 @@ class DashboardController extends Controller
             'location' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'available_tickets' => 'required|integer|min:1',
-            'category_id' => 'nullable|exists:categories,id',
+            'category' => 'nullable|string|max:255',
             'banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'lga_id' => 'nullable|exists:lgas,id',
-            'bank_id' => 'nullable|exists:banks,id',
+            'bank' => 'nullable|string|max:255',
         ]);
 
         // Combine date and time into datetime
@@ -101,6 +101,12 @@ class DashboardController extends Controller
         $validated['date'] = $dateTime;
         $validated['currency'] = 'NGN';
         $validated['scanner_code'] = strtoupper(substr(md5(uniqid() . time()), 0, 12));
+        
+        // Map 'bank' input to 'bank_name' database field
+        if (isset($validated['bank'])) {
+            $validated['bank_name'] = $validated['bank'];
+            unset($validated['bank']);
+        }
 
         // Handle banner upload
         if ($request->hasFile('banner')) {

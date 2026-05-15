@@ -32,13 +32,8 @@
                 <!-- Category -->
                 <div>
                     <label class="block text-white font-semibold mb-2">Category</label>
-                    <select name="category_id" class="w-full bg-gray-700/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:border-yellow-500 focus:outline-none transition" required>
-                        <option value="">Select a category</option>
-                        @foreach (\App\Models\Category::all() as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('category_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    <input type="text" name="category" value="{{ old('category') }}" class="w-full bg-gray-700/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:border-yellow-500 focus:outline-none transition" placeholder="e.g., Concert, Sports, Conference" required>
+                    @error('category') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Event Date & Time -->
@@ -100,42 +95,16 @@
 
                 <!-- Bank Selection for Payouts -->
                 <div class="border-t border-gray-600 pt-6">
-                    <h3 class="text-lg font-semibold text-yellow-400 mb-4">🏦 Select Your Bank for Payouts</h3>
+                    <h3 class="text-lg font-semibold text-yellow-400 mb-4">🏦 Your Bank for Payouts</h3>
                     <p class="text-gray-400 text-sm mb-4">When buyers purchase tickets, 95% of the payment will be transferred to your selected bank account instantly.</p>
                     
                     <label class="block text-white font-semibold mb-2">Bank Name</label>
-                    <select name="bank_id" class="w-full bg-gray-700/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:border-yellow-500 focus:outline-none transition" required>
-                        <option value="">-- Select Your Bank --</option>
-                        
-                        @php
-                            $banks = \App\Models\Bank::orderBy('category')->orderBy('name')->get()->groupBy('category');
-                            $categoryLabels = [
-                                'commercial' => '🏢 Commercial Banks',
-                                'merchant' => '🏛️ Merchant Banks',
-                                'digital' => '💳 Digital Banks & Fintech',
-                                'psb' => '📱 Payment Service Banks',
-                                'microfinance' => '💰 Microfinance Banks',
-                                'telco' => '📞 Telco Wallets',
-                            ];
-                        @endphp
-
-                        @foreach ($categoryLabels as $category => $label)
-                            @if (isset($banks[$category]) && count($banks[$category]) > 0)
-                                <optgroup label="{{ $label }}">
-                                    @foreach ($banks[$category] as $bank)
-                                        <option value="{{ $bank->id }}" data-code="{{ $bank->code }}" {{ old('bank_id') == $bank->id ? 'selected' : '' }}>
-                                            {{ $bank->name }} ({{ $bank->code }})
-                                        </option>
-                                    @endforeach
-                                </optgroup>
-                            @endif
-                        @endforeach
-                    </select>
-                    @error('bank_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    <input type="text" name="bank" value="{{ old('bank') }}" class="w-full bg-gray-700/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:border-yellow-500 focus:outline-none transition" placeholder="e.g., GTBank, Access Bank, Opay" required>
+                    @error('bank') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     
                     <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mt-4">
                         <p class="text-blue-300 text-sm">
-                            <strong>💡 Pro Tip:</strong> Make sure to use the same bank account information when updating your bank details in the dashboard for instant payouts to work correctly.
+                            <strong>💡 Pro Tip:</strong> Make sure to use the same bank name when updating your bank details in the dashboard for instant payouts to work correctly.
                         </p>
                     </div>
                 </div>
