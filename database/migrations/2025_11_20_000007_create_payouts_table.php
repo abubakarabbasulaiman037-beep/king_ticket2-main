@@ -8,22 +8,12 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('payouts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('event_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 12, 2);
-            $table->decimal('fee', 12, 2)->default(0);
-            $table->decimal('net_amount', 12, 2);
-            $table->string('recipient_code')->nullable();
-            $table->string('transfer_code')->nullable();
-            $table->string('status')->default('pending');
-            $table->json('meta')->nullable();
-            $table->timestamps();
-        });
+        // Payouts table created by 2025_12_19_000002_create_payouts_table.php
+        // Skipping duplicate here
     }
 
     public function down()
     {
-        Schema::dropIfExists('payouts');
+        // Skipping duplicate down
     }
 };
