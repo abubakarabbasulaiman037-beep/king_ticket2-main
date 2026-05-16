@@ -10,7 +10,7 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'event_id', 'buyer_id', 'amount', 'reference', 'status', 'currency', 'country'
+        'event_id', 'buyer_id', 'amount', 'reference', 'status', 'currency', 'country', 'quantity'
     ];
 
     public function event()

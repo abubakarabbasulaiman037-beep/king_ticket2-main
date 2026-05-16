@@ -131,6 +131,7 @@
             @auth
                 <form action="{{ route('payment.initiate', $event->id) }}" method="POST" class="w-full">
                     @csrf
+                    <input type="hidden" name="quantity" value="1" id="quantity_hidden">
                     <button type="submit" class="w-full group relative block">
                         <div class="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg blur-lg opacity-75 group-hover:opacity-100 transition-all"></div>
                         <div class="relative bg-black px-6 py-4 rounded-lg border border-yellow-500/50 font-bold text-white text-center hover:text-yellow-100">
@@ -163,6 +164,9 @@ function updateTotal() {
     const fee = Math.round(subtotal * 0.01); // 1% fee
     const total = subtotal + fee;
     
+    // Sync hidden input
+    document.getElementById('quantity_hidden').value = qty;
+    
     document.getElementById('subtotal').textContent = '{{ $event->currency ?? "₦" }}' + subtotal.toLocaleString();
     document.getElementById('fee').textContent = '{{ $event->currency ?? "₦" }}' + fee.toLocaleString();
     document.getElementById('total').textContent = '{{ $event->currency ?? "₦" }}' + total.toLocaleString();
@@ -181,5 +185,6 @@ function increaseQty() {
 }
 
 document.getElementById('quantity').addEventListener('change', updateTotal);
+updateTotal(); // Initialize on page load
 </script>
 @endsection

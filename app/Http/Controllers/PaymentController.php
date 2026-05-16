@@ -21,7 +21,8 @@ class PaymentController extends Controller
     public function initiate(Request $request, Event $event)
     {
         $buyer = Auth::user();
-        $amount = (float) $event->price;
+        $quantity = max(1, (int) $request->input('quantity', 1));
+        $amount = (float) $event->price * $quantity;
 
         // System only supports NGN (Nigerian Naira)
         $currency = 'NGN';
@@ -32,6 +33,7 @@ class PaymentController extends Controller
             'event_id' => $event->id,
             'buyer_id' => $buyer->id,
             'amount' => $displayAmount,
+            'quantity' => $quantity,
             'currency' => $currency,
             'country' => 'NG',
             'reference' => 'pay_'.Str::random(12),
@@ -134,84 +136,92 @@ class PaymentController extends Controller
         $payment = Payment::where('reference', $reference)->firstOrFail();
         $payment->update(['status' => 'success']);
 
-        // Create ticket for buyer and assign a sequential seat number for the event
+        // Create tickets for buyer and assign a sequential seat number for the event
         $event = Event::find($payment->event_id);
+        $quantity = $payment->quantity ?? 1;
 
         // Prevent overselling
-        if ($event->available_tickets <= 0) {
+        if ($event->available_tickets < $quantity) {
             $payment->update(['status' => 'failed']);
-            return redirect()->route('events.public')->with('error', 'Tickets are sold out for this event.');
+            return redirect()->route('events.public')->with('error', 'Not enough tickets available. Only ' . $event->available_tickets . ' left.');
         }
 
-        // Determine next seat number based on tickets already sold for the event
-        $currentCount = $event->tickets()->count();
-        $nextSeatNumber = $currentCount + 1;
-        $seatLabel = 'Seat '.$nextSeatNumber; // format: Seat 1, Seat 2, ...
+        $tickets = [];
+        
+        // Create tickets for each quantity
+        for ($i = 0; $i < $quantity; $i++) {
+            // Determine next seat number based on tickets already sold for the event
+            $currentCount = $event->tickets()->count();
+            $nextSeatNumber = $currentCount + $i + 1;
+            $seatLabel = 'Seat '.$nextSeatNumber; // format: Seat 1, Seat 2, ...
 
-        $ticket = Ticket::create([
-            'event_id' => $payment->event_id,
-            'user_id' => $payment->buyer_id,
-            'seat_number' => $seatLabel,
-        ]);
-
-        // Decrement available tickets
-        $event->decrement('available_tickets');
-
-        // Generate QR code image and save using external API to avoid package dependency
-        $filename = 'ticket_'.$ticket->id.'_'.time().'.png';
-        $path = storage_path('app/public/qrcodes/'.$filename);
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), 0755, true);
-        }
-
-        $ticketUrl = route('tickets.show', $ticket->id);
-        $qrApi = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode($ticketUrl);
-
-        // Try using curl first
-        $imageData = null;
-        if (function_exists('curl_init')) {
-            $ch = curl_init($qrApi);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            $imageData = curl_exec($ch);
-            curl_close($ch);
-        }
-
-        // Fallback to file_get_contents
-        if (empty($imageData) && ini_get('allow_url_fopen')) {
-            $imageData = @file_get_contents($qrApi);
-        }
-
-        if ($imageData) {
-            file_put_contents($path, $imageData);
-            $ticket->update(['qr_code' => $filename]);
-        } else {
-            // As a fallback, store a tiny placeholder
-            $im = imagecreatetruecolor(300, 300);
-            $bg = imagecolorallocate($im, 255, 255, 255);
-            $text = imagecolorallocate($im, 0, 0, 0);
-            imagefilledrectangle($im, 0, 0, 300, 300, $bg);
-            imagestring($im, 5, 10, 140, 'QR GENERATION FAILED', $text);
-            imagepng($im, $path);
-            imagedestroy($im);
-            $ticket->update(['qr_code' => $filename]);
-        }
-
-        // Generate PDF ticket (if the service is available)
-        try {
-            $pdfService = new \App\Services\PdfTicketService();
-            $pdfUrl = $pdfService->generate($ticket);
-
-            // Dispatch email job with ticket PDF
-            dispatch(new \App\Jobs\SendTicketEmail($ticket->id));
-        } catch (\Throwable $e) {
-            // Log error but don't fail the payment
-            \Log::error('Ticket generation failed after payment', [
-                'ticket_id' => $ticket->id,
-                'error' => $e->getMessage()
+            $ticket = Ticket::create([
+                'event_id' => $payment->event_id,
+                'user_id' => $payment->buyer_id,
+                'seat_number' => $seatLabel,
             ]);
-            $pdfUrl = null;
+            
+            $tickets[] = $ticket;
+
+            // Generate QR code image and save using external API to avoid package dependency
+            $filename = 'ticket_'.$ticket->id.'_'.time().'.png';
+            $path = storage_path('app/public/qrcodes/'.$filename);
+            if (!is_dir(dirname($path))) {
+                mkdir(dirname($path), 0755, true);
+            }
+
+            $ticketUrl = route('tickets.show', $ticket->id);
+            $qrApi = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode($ticketUrl);
+
+            // Try using curl first
+            $imageData = null;
+            if (function_exists('curl_init')) {
+                $ch = curl_init($qrApi);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                $imageData = curl_exec($ch);
+                curl_close($ch);
+            }
+
+            // Fallback to file_get_contents
+            if (empty($imageData) && ini_get('allow_url_fopen')) {
+                $imageData = @file_get_contents($qrApi);
+            }
+
+            if ($imageData) {
+                file_put_contents($path, $imageData);
+                $ticket->update(['qr_code' => $filename]);
+            } else {
+                // As a fallback, store a tiny placeholder
+                $im = imagecreatetruecolor(300, 300);
+                $bg = imagecolorallocate($im, 255, 255, 255);
+                $text = imagecolorallocate($im, 0, 0, 0);
+                imagefilledrectangle($im, 0, 0, 300, 300, $bg);
+                imagestring($im, 5, 10, 140, 'QR GENERATION FAILED', $text);
+                imagepng($im, $path);
+                imagedestroy($im);
+                $ticket->update(['qr_code' => $filename]);
+            }
+
+            // Generate PDF ticket (if the service is available)
+            try {
+                $pdfService = new \App\Services\PdfTicketService();
+                $pdfUrl = $pdfService->generate($ticket);
+
+                // Dispatch email job with ticket PDF
+                dispatch(new \App\Jobs\SendTicketEmail($ticket->id));
+            } catch (\Throwable $e) {
+                // Log error but don't fail the payment
+                \Log::error('Ticket generation failed after payment', [
+                    'ticket_id' => $ticket->id,
+                    'error' => $e->getMessage()
+                ]);
+                $pdfUrl = null;
+            }
         }
+
+        // Decrement available tickets for all purchased tickets
+        $event->decrement('available_tickets', $quantity);
 
         // **INSTANT PAYOUT: Transfer 95% to organizer immediately**
         try {
@@ -228,6 +238,8 @@ class PaymentController extends Controller
             // Payout failed but don't interrupt ticket delivery to buyer
         }
 
-        return redirect()->route('tickets.show', $ticket->id)->with('success', 'Payment successful. Your ticket is ready.' . ($pdfUrl ? ' Download: ' . $pdfUrl : ''));
+        // Redirect to the first ticket
+        $firstTicket = reset($tickets);
+        return redirect()->route('tickets.show', $firstTicket->id)->with('success', 'Payment successful. Your ' . $quantity . ' ticket(s) are ready.');
     }
 }
