@@ -129,12 +129,15 @@
 
             <!-- CTA Button -->
             @auth
-                <a href="{{ route('payment.checkout', $event->id) }}" class="w-full group relative block">
-                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg blur-lg opacity-75 group-hover:opacity-100 transition-all"></div>
-                    <div class="relative bg-black px-6 py-4 rounded-lg border border-yellow-500/50 font-bold text-white text-center hover:text-yellow-100">
-                        Book Now
-                    </div>
-                </a>
+                <form action="{{ route('payment.initiate', $event->id) }}" method="POST" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full group relative block">
+                        <div class="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg blur-lg opacity-75 group-hover:opacity-100 transition-all"></div>
+                        <div class="relative bg-black px-6 py-4 rounded-lg border border-yellow-500/50 font-bold text-white text-center hover:text-yellow-100">
+                            Book Now
+                        </div>
+                    </button>
+                </form>
             @else
                 <a href="{{ route('login') }}" class="w-full group relative block">
                     <div class="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg blur-lg opacity-75 group-hover:opacity-100 transition-all"></div>
